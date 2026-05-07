@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "NexoraBackend.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/NexoraBackend.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NexoraBackend.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "NexoraBackend.Domain/1.0.0": {
+      "type": "project",
+      "path": "../NexoraBackend.Domain/NexoraBackend.Domain.csproj",
+      "msbuildProject": "../NexoraBackend.Domain/NexoraBackend.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "NexoraBackend.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Sujan Tamang\\.nuget\\packages\\": {},
@@ -39,7 +58,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Domain\\NexoraBackend.Domain.csproj": {
+              "projectPath": "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Domain\\NexoraBackend.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -36,6 +36,43 @@
             "related": ".pdb;.xml"
           }
         }
+      },
+      "NexoraBackend.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "NexoraBackend.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/NexoraBackend.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NexoraBackend.Application.dll": {}
+        }
+      },
+      "NexoraBackend.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/NexoraBackend.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NexoraBackend.Domain.dll": {}
+        }
+      },
+      "NexoraBackend.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "NexoraBackend.Application": "1.0.0",
+          "NexoraBackend.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/NexoraBackend.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NexoraBackend.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -75,11 +112,28 @@
         "microsoft.openapi.2.0.0.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
+    },
+    "NexoraBackend.Application/1.0.0": {
+      "type": "project",
+      "path": "../NexoraBackend.Application/NexoraBackend.Application.csproj",
+      "msbuildProject": "../NexoraBackend.Application/NexoraBackend.Application.csproj"
+    },
+    "NexoraBackend.Domain/1.0.0": {
+      "type": "project",
+      "path": "../NexoraBackend.Domain/NexoraBackend.Domain.csproj",
+      "msbuildProject": "../NexoraBackend.Domain/NexoraBackend.Domain.csproj"
+    },
+    "NexoraBackend.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../NexoraBackend.Infrastructure/NexoraBackend.Infrastructure.csproj",
+      "msbuildProject": "../NexoraBackend.Infrastructure/NexoraBackend.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
-      "Microsoft.AspNetCore.OpenApi >= 10.0.7"
+      "Microsoft.AspNetCore.OpenApi >= 10.0.7",
+      "NexoraBackend.Application >= 1.0.0",
+      "NexoraBackend.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -114,7 +168,14 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Application\\NexoraBackend.Application.csproj": {
+              "projectPath": "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Application\\NexoraBackend.Application.csproj"
+            },
+            "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Infrastructure\\NexoraBackend.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Sujan Tamang\\Documents\\Veel\\NexoraBackend\\src\\NexoraBackend.Infrastructure\\NexoraBackend.Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
