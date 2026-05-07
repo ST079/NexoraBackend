@@ -10,9 +10,4 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NexoraBackend.Application\NexoraBackend.Application.csproj" />
-    <ProjectReference Include="..\NexoraBackend.Infrastructure\NexoraBackend.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

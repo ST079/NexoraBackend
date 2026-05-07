@@ -19,28 +19,28 @@ cd ProductManagement
 dotnet new sln -n NexoraBackend
 
 # Create each project (each is its own .csproj file)
-dotnet new classlib -n NexoraBackend.Domain        
-dotnet new classlib -n NexoraBackend.Application   
-dotnet new classlib -n NexoraBackend.Infrastructure 
-dotnet new webapi   -n NexoraBackend.API           
+dotnet new classlib -n Core       
+dotnet new classlib -n Config 
+dotnet new classlib -n Common
+dotnet new webapi   -n Adapter          
 
 # Add all projects to the solution
-dotnet sln add src/NexoraBackend.Domain/NexoraBackend.Domain.csproj
-dotnet sln add src/NexoraBackend.Application/NexoraBackend.Application.csproj
-dotnet sln add src/NexoraBackend.Infrastructure/NexoraBackend.Infrastructure.csproj
-dotnet sln add src/NexoraBackend.API/NexoraBackend.API.csproj 
+dotnet sln add src/Core/Core.csproj
+dotnet sln add src/Config/Config.csproj
+dotnet sln add src/Common/Common.csproj
+dotnet sln add src/Adapter/Adapter.csproj 
 ```
 
 ### Step 2 — Set Up Project References
 ``` 
 # Application needs to know about Domain
-dotnet add src/ProductManagement.Application reference src/ProductManagement.Domain
+dotnet add src/Application reference src/Domain
 
 # Infrastructure needs to know about Domain AND Application
-dotnet add src/ProductManagement.Infrastructure reference src/ProductManagement.Domain
-dotnet add src/ProductManagement.Infrastructure reference src/ProductManagement.Application
+dotnet add src/Infrastructure reference src/Domain
+dotnet add src/Infrastructure reference src/Application
 
 # API needs to know about Application (and Infrastructure for DI wiring only)
-dotnet add src/ProductManagement.API reference src/ProductManagement.Application
-dotnet add src/ProductManagement.API reference src/ProductManagement.Infrastructure
+dotnet add src/API reference src/Application
+dotnet add src/API reference src/Infrastructure
 ```

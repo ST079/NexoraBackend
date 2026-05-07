@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/NexoraBackend.API/NexoraBackend.API.csproj" />
-    <Project Path="src/NexoraBackend.Application/NexoraBackend.Application.csproj" />
-    <Project Path="src/NexoraBackend.Domain/NexoraBackend.Domain.csproj" />
-    <Project Path="src/NexoraBackend.Infrastructure/NexoraBackend.Infrastructure.csproj" />
+    <Project Path="src/Adapter/Adapter.csproj" />
+    <Project Path="src/Common/Common.csproj" />
+    <Project Path="src/Config/Config.csproj" />
+    <Project Path="src/Core/Core.csproj" />
   </Folder>
 </Solution>
