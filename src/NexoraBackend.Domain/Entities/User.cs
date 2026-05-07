@@ -1,6 +1,6 @@
 
 
-using System.Net.Sockets;
+using NexoraBackend.Domain.ValueObjets;
 
 namespace NexoraBackend.Domain.Entities;
 
@@ -14,6 +14,6 @@ public class User
     public List<string> Roles { get; set; } = new();
     public string PhoneNumber { get; set; } = string.Empty;
     public string? ProfileImageUrl { get; set; }
-    public DateTime CreatedAt = DateTime.UtcNow;
+    public DateTime CreatedAt {get; private set;} = DateTime.UtcNow;
     public bool IsActive { get; set; }
 }
