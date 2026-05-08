@@ -14,11 +14,11 @@ Open your terminal and run these commands one by one:
 # Create the root folder
 mkdir NexoraBack
 cd NexoraBack
+```
 
 # Create the solution file (think of it as the "folder" that holds all projects)
-dotnet new sln -n NexoraBackend
-
 ```
+dotnet new sln -n NexoraBackend
 mkdir src
 cd src
 
