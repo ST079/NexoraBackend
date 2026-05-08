@@ -5,7 +5,7 @@ namespace NexoraBackend.Core.Domain.Entities;
 
 public class Product
 {
-    public Guid ProductId = default!;
+    public Guid ProductId { get; private set; }
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
     public string? Brand { get; set; }
@@ -13,6 +13,11 @@ public class Product
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public List<string>? ImageUrls { get; set; }
+
+    public Product()
+    {
+        ProductId = Guid.NewGuid();
+    }
 
     public void UpdateStock(int stock)
     {

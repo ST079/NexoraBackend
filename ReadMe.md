@@ -54,3 +54,42 @@ dotnet add src/Config reference src/Adapters/Application
 dotnet add src/Config reference src/Adapters/Infrastructure
 dotnet add src/Config reference src/Common
 ```
+
+### flow
+```
+Frontend
+   ↓
+DTO (ProductDto)
+   ↓
+Mapper
+   ↓
+Domain (Product)
+   ↓
+Business Logic
+   ↓
+Mapper
+   ↓
+Entity (ProductEntity)
+   ↓
+EF Core
+   ↓
+Database
+```
+
+### Return flow:
+```
+
+Database
+   ↓
+Entity
+   ↓
+Mapper
+   ↓
+Domain
+   ↓
+Mapper
+   ↓
+Response DTO
+   ↓
+Frontend
+```
