@@ -12,35 +12,45 @@ The golden rule is: inner layers NEVER know about outer layers.
 Open your terminal and run these commands one by one:
 ```
 # Create the root folder
-mkdir ProductManagement
-cd ProductManagement
+mkdir NexoraBack
+cd NexoraBack
 
 # Create the solution file (think of it as the "folder" that holds all projects)
 dotnet new sln -n NexoraBackend
 
-# Create each project (each is its own .csproj file)
-dotnet new classlib -n Core       
-dotnet new classlib -n Config 
-dotnet new classlib -n Common
-dotnet new webapi   -n Adapter          
-
-# Add all projects to the solution
-dotnet sln add src/Core/Core.csproj
-dotnet sln add src/Config/Config.csproj
-dotnet sln add src/Common/Common.csproj
-dotnet sln add src/Adapter/Adapter.csproj 
 ```
+mkdir src
+cd src
 
-### Step 2 — Set Up Project References
-``` 
-# Application needs to know about Domain
-dotnet add src/Application reference src/Domain
+mkdir Core
+mkdir Common
+mkdir Config
+mkdir Adapters
 
-# Infrastructure needs to know about Domain AND Application
-dotnet add src/Infrastructure reference src/Domain
-dotnet add src/Infrastructure reference src/Application
+dotnet new classlib -n NexoraBackend.Core -o Core
+dotnet new classlib -n NexoraBackend.Common -o Common
+dotnet new classlib -n NexoraBackend.Config -o Config
+dotnet new classlib -n NexoraBackend.Application -o Adapters/Application
+dotnet new classlib -n NexoraBackend.Infrastructure -o Adapters/Infrastructure
+dotnet new webapi -n NexoraBackend.API -o Adapters/API
+cd ..
 
-# API needs to know about Application (and Infrastructure for DI wiring only)
-dotnet add src/API reference src/Application
-dotnet add src/API reference src/Infrastructure
+dotnet sln add src/Core/NexoraBackend.Core.csproj
+dotnet sln add src/Common/NexoraBackend.Common.csproj
+dotnet sln add src/Config/NexoraBackend.Config.csproj
+dotnet sln add src/Adapters/Application/NexoraBackend.Application.csproj
+dotnet sln add src/Adapters/Infrastructure/NexoraBackend.Infrastructure.csproj
+dotnet sln add src/Adapters/API/NexoraBackend.API.csproj
+dotnet add src/Adapters/Application reference src/Core
+dotnet add src/Adapters/Application reference src/Common
+dotnet add src/Adapters/Infrastructure reference src/Adapters/Application
+dotnet add src/Core
+dotnet add src/Common
+dotnet add src/Adapters/API reference src/Adapters/Application
+dotnet add src/Adapters/API reference src/Adapters/Infrastructure
+dotnet add src/Adapters/API reference src/Config
+dotnet add src/Adapters/API reference src/Common
+dotnet add src/Config reference src/Adapters/Application
+dotnet add src/Config reference src/Adapters/Infrastructure
+dotnet add src/Config reference src/Common
 ```

@@ -1,8 +1,22 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Adapter/Adapter.csproj" />
-    <Project Path="src/Common/Common.csproj" />
-    <Project Path="src/Config/Config.csproj" />
-    <Project Path="src/Core/Core.csproj" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/Adapters/" />
+  <Folder Name="/src/Adapters/API/">
+    <Project Path="src/Adapters/API/NexoraBackend.API.csproj" />
+  </Folder>
+  <Folder Name="/src/Adapters/Application/">
+    <Project Path="src/Adapters/Application/NexoraBackend.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Adapters/Infrastructure/">
+    <Project Path="src/Adapters/Infrastructure/NexoraBackend.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/NexoraBackend.Common.csproj" />
+  </Folder>
+  <Folder Name="/src/Config/">
+    <Project Path="src/Config/NexoraBackend.Config.csproj" />
+  </Folder>
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/NexoraBackend.Core.csproj" />
   </Folder>
 </Solution>

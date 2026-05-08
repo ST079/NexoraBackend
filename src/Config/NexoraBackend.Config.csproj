@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adapters\Application\NexoraBackend.Application.csproj" />
+    <ProjectReference Include="..\Adapters\Infrastructure\NexoraBackend.Infrastructure.csproj" />
+    <ProjectReference Include="..\Common\NexoraBackend.Common.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

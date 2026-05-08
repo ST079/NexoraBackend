@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace NexoraBackend.Common;
 
 public class Class1
 {
