@@ -1,4 +1,4 @@
-namespace NexoraBackend.Adapters.API.GraphQL.Queries;
+namespace NexoraBackend.API.GraphQL.Users;
 
 public class Query
 {

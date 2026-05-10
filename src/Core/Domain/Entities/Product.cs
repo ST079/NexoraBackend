@@ -12,7 +12,7 @@ public class Product
     public string? Category { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
-    public List<string>? ImageUrls { get; set; }
+    public List<string>? ImageUrls { get; set; } = new List<string>();
 
     public Product()
     {
@@ -34,6 +34,7 @@ public class Product
         {
             throw new DomainException("Url is Empty, Cannot be Added.");
         }
-        ImageUrls.Add(url);
+
+        ImageUrls?.Add(url);
     }
 }

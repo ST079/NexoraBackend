@@ -1,19 +1,15 @@
 
+namespace NexoraBackend.Application.DTOs.Inputs.Users;
 
-using NexoraBackend.Core.Domain.ValueObjects;
-
-namespace NexoraBackend.Core.Domain.Entities;
-
-public class User
+public class UserDto
 {
-    public Guid Id { get;  set; }
     public string Name { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string Password { get; set; } = default!;
-    public Address Address { get; set; } = default!;
-    public List<string> Roles { get; set; } = new();
+    public string Street { get; set; } = default!;
+    public string City { get; set; } = default!;
+    public string Country { get; set; } = default!;
     public string PhoneNumber { get; set; } = string.Empty;
     public string? ProfileImageUrl { get; set; }
-
-
+    public bool IsActive { get; set; }
 }
