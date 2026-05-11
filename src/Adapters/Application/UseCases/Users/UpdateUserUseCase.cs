@@ -4,6 +4,7 @@ using NexoraBackend.Application.DTOs.Responses.Users;
 using NexoraBackend.Application.Mappings;
 using NexoraBackend.Common.Exceptions;
 using NexoraBackend.Core.Domain.Ports;
+using NexoraBackend.Core.Domain.ValueObjects;
 
 
 namespace NexoraBackend.Application.UseCases.Users;
@@ -36,6 +37,24 @@ public class UpdateUserUseCase
 
         if (user == null)
             throw new NotFoundException("User not found");
+
+        if (!string.IsNullOrWhiteSpace(input.Name))
+            user.Name = input.Name;
+
+        if (!string.IsNullOrWhiteSpace(input.Email))
+            user.Email = input.Email;
+
+        if (!string.IsNullOrWhiteSpace(input.PhoneNumber))
+            user.PhoneNumber = input.PhoneNumber;
+
+        if (input.Street != null || input.City != null || input.Country != null)
+        {
+            user.Address = new Address(
+                input.Street ?? user.Address.Street!,
+                input.City ?? user.Address.City,
+                input.Country ?? user.Address.Country
+            );
+        }
 
         var updatedUser = await _userRepository.UpdateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
