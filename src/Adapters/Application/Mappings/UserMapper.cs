@@ -9,6 +9,25 @@ namespace NexoraBackend.Application.Mappings;
 public class UserMapper
 {
     // DTO → Domain : UserFactory
+    public User ToDomain(RegisterDto dto)
+    {
+        return new User
+        {
+            Id = Guid.NewGuid(),
+            Name = dto.Name,
+            Email = dto.Email,
+            Password = dto.Password,
+            PhoneNumber = dto.PhoneNumber,
+            Address = new Address
+            (
+                dto.Street,
+                dto.City,
+                dto.Country
+            ),
+            Roles = new List<string> { "User" },
+            IsActive = true
+        };
+    }
 
     //Domain to Entity
     public UserEntity ToEntity(User domain)

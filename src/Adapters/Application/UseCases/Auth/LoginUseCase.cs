@@ -1,38 +1,25 @@
-
-
-using FluentValidation;
 using NexoraBackend.Core.Domain.Ports;
 using NexoraBackend.Application.DTOs.Inputs.Users;
 using NexoraBackend.Application.DTOs.Responses.Users;
-using NexoraBackend.Application.DTOs.Responses;
+using NexoraBackend.Application.DTOs.Responses.Auth;
 
 
-namespace NexoraBackend.Application.UseCases.Users;
+namespace NexoraBackend.Application.UseCases.Auth;
 
 public class LoginUseCase
 {
-    private readonly IValidator<LoginDto> _validator;
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _jwtService;
 
-    public LoginUseCase(IValidator<LoginDto> validator, IUserRepository userRepository, ITokenService jwtService)
+    public LoginUseCase(IUserRepository userRepository, ITokenService jwtService)
     {
-        _validator = validator;
+
         _userRepository = userRepository;
         _jwtService = jwtService;
     }
 
     public async Task<LoginResponseDto> Execute(LoginDto input)
     {
-        var result = await _validator.ValidateAsync(input);
-
-        if (!result.IsValid)
-        {
-            throw new Exception(
-                string.Join(", ", result.Errors.Select(e => e.ErrorMessage))
-            );
-        }
-
         var user = await _userRepository.LoginAsync(input.Email, input.Password);
 
         if (user == null)

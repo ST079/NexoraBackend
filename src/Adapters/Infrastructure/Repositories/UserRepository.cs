@@ -48,7 +48,7 @@ public class UserRepository : IUserRepository
         var user = await _dbContext.Users.FindAsync(id);
 
         if (user == null)
-            throw new CustomException("User not found.", 404);
+            throw new NotFoundException("User not found.");
 
         _dbContext.Users.Remove(user);
         return true;
@@ -57,15 +57,11 @@ public class UserRepository : IUserRepository
     //fetch a user by id
     public async Task<User?> GetUserByIdAsync(Guid id)
     {
-        try
-        {
-            var user = await _dbContext.Users.FindAsync(id);
-            return _mapper.ToDomain(user);
-        }
-        catch (Exception ex)
-        {
-            throw new CustomException("An error occurred while fetching the user.", 500);
-        }
+        var user = await _dbContext.Users.FindAsync(id);
+        if (user == null)
+            throw new NotFoundException("User not found.");
+        return _mapper.ToDomain(user);
+
     }
 
     public async Task<bool> GetUserByEmailAsync(string email)

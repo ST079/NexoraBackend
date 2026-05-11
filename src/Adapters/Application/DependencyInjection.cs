@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NexoraBackend.Application.Mappings;
 using NexoraBackend.Application.Services;
+using NexoraBackend.Application.UseCases.Auth;
 using NexoraBackend.Application.UseCases.Users;
 using NexoraBackend.Application.Validators.Users;
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<LoginUseCase>();
         services.AddScoped<UpdateUserUseCase>();
         services.AddScoped<DeleteUserUseCase>();
+        services.AddScoped<RegisterUserUseCase>();
 
         //mappers
         services.AddScoped<UserMapper>();
