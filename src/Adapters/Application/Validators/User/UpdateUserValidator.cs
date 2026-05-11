@@ -11,10 +11,14 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserDto>
         RuleFor(x => x.Name).MinimumLength(2)
                             .WithMessage("Name must be at least 2 characters.");
 
-        RuleFor(x => x.Phone).Matches(@"^\+?[1-9]\d{9}$")
-                            .When(x => !string.IsNullOrEmpty(x.Phone))
+        RuleFor(x => x.PhoneNumber).Matches(@"^\+?[1-9]\d{9}$")
+                            .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
                             .WithMessage("Invalid phone number format.");
-        RuleFor(x => x.Address).MaximumLength(200)
-                            .WithMessage("Address cannot exceed 200 characters.");
+        RuleFor(x => x.Street).MaximumLength(50)
+                            .WithMessage("Street cannot exceed 50 characters.");
+        RuleFor(x => x.City).MaximumLength(50)
+                            .WithMessage("City cannot exceed 50 characters.");
+        RuleFor(x => x.Country).MaximumLength(50)
+                            .WithMessage("Country cannot exceed 50 characters.");
     }
 }

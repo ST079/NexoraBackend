@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NexoraBackend.Application.Mappings;
+using NexoraBackend.Application.Services;
 using NexoraBackend.Application.UseCases.Users;
 using NexoraBackend.Application.Validators.Users;
 
@@ -19,6 +20,9 @@ public static class DependencyInjection
 
         //validators
         services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
+
+        //services
+        services.AddScoped<UserQueryService>();
 
         return services;
     }

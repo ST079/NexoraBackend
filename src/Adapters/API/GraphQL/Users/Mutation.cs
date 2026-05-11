@@ -1,4 +1,3 @@
-using System.Net.Security;
 using NexoraBackend.Application.DTOs.Inputs.Users;
 using NexoraBackend.Application.DTOs.Responses;
 using NexoraBackend.Application.DTOs.Responses.Users;
@@ -18,13 +17,11 @@ public class Mutation
         return await loginUseCase.Execute(loginDto);
     }
 
-    // public async Task<User> UpdateUser
-    // (UpdateUserInput input, [Service] UpdateUserUseCase updateUserUseCase)
-    // {
-    //     User updatedUser = new User { Id = input.Id, Name = input.Name!, Email = input.Email!, Phone = input.Phone!, Address = input.Address! };
-    //     return await updateUserUseCase.Execute(input.Id, input);
-    // }
-
+    public async Task<UserResponseDto> UpdateUser
+    (UpdateUserDto updateUserDto, [Service] UpdateUserUseCase updateUserUseCase)
+    {
+        return await updateUserUseCase.Execute(updateUserDto);
+    }
     public async Task<bool> DeleteUser(Guid id, [Service] DeleteUserUseCase deleteUserUseCase)
     {
         return await deleteUserUseCase.Execute(id);

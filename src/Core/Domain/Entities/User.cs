@@ -14,6 +14,5 @@ public class User
     public List<string> Roles { get; set; } = new();
     public string PhoneNumber { get; set; } = string.Empty;
     public string? ProfileImageUrl { get; set; }
-
-
+    public bool IsActive { get; set; }
 }

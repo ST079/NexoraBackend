@@ -81,34 +81,33 @@ public class UserRepository : IUserRepository
     //fetch all users from the database
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        try
-        {
-            var user = await _dbContext.Users.ToListAsync();
-            return user.Select(_mapper.ToDomain);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while fetching users.", ex);
-        }
+        var user = await _dbContext.Users.ToListAsync();
+        return user.Select(u => _mapper.ToDomain(u));
     }
 
     //update an existing user
     public async Task<User> UpdateUserAsync(User user)
     {
-        try
+        var entity = await _dbContext.Users
+        .FirstOrDefaultAsync(x => x.Id == user.Id);
+
+        if (entity == null)
+            throw new NotFoundException("User not found");
+
+        if (user.Name != null) entity.Name = user.Name;
+        if (user.Email != null) entity.Email = user.Email;
+        if (user.PhoneNumber != null) entity.PhoneNumber = user.PhoneNumber;
+
+        if (user.Address != null)
         {
-            var findUser = await GetUserByIdAsync(user.Id);
-            if (user.Name != null) findUser?.Name = user.Name;
-            if (user.Email != null) findUser?.Email = user.Email;
-            if (user.PhoneNumber != null) findUser?.PhoneNumber = user.PhoneNumber;
-            if (user.Address != null) findUser?.Address = user.Address;
-            return findUser!;
+            entity.Street = user.Address.Street ?? "";
+            entity.City = user.Address.City;
+            entity.Country = user.Address.Country;
         }
-        catch (Exception ex)
-        {
-            throw new Exception("An error occurred while updating the user.", ex);
-        }
+
+        return _mapper.ToDomain(entity);
     }
+
 
 
 }

@@ -10,7 +10,7 @@ public class UserResponseDto
     public string Street { get; set; } = default!;
     public string City { get; set; } = default!;
     public string Country { get; set; } = default!;
-    public string PhoneNumber { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
     public string? ProfileImageUrl { get; set; }
     public bool IsActive { get; set; }
 }
