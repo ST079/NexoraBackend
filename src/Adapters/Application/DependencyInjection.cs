@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<UpdateUserUseCase>();
         services.AddScoped<DeleteUserUseCase>();
         services.AddScoped<RegisterUserUseCase>();
+        services.AddScoped<RefreshTokenMapper>();
+        services.AddScoped<LogoutUseCase>();
 
         //mappers
         services.AddScoped<UserMapper>();

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\NexoraBackend.Application.csproj" />
+    <ProjectReference Include="..\..\Config\NexoraBackend.Config.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -32,4 +32,14 @@ public class Mutation
     {
         return await deleteUserUseCase.Execute(id);
     }
+
+    public async Task<bool> Logout(string refreshToken, [Service] LogoutUseCase logoutUseCase)
+    {
+        return await logoutUseCase.Execute(refreshToken);
+    }
+
+    public async Task<AuthResponseDto> RefreshToken(string accessToken, string refreshToken, [Service] RefreshTokenUseCase refreshTokenUseCase)
+    {
+        return await refreshTokenUseCase.Execute(accessToken, refreshToken);
+    }
 }

@@ -20,9 +20,9 @@ public class UserMapper
             PhoneNumber = dto.PhoneNumber,
             Address = new Address
             (
-                dto.Street,
+                dto.Street!,
                 dto.City,
-                dto.Country
+                dto.Country!
             ),
             Roles = new List<string> { "User" },
             IsActive = true

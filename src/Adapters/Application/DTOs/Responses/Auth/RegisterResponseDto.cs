@@ -5,5 +5,5 @@ namespace NexoraBackend.Application.DTOs.Responses.Auth;
 public class RegisterResponseDto
 {
     public UserResponseDto RegisteredUser { get; set; } = default!;
-    public string Token { get; set; } = default!;
+    public AuthResponseDto Token { get; set; } = default!;
 }
