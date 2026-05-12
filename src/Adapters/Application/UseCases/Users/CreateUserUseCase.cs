@@ -31,14 +31,14 @@ public class CreateUserUseCase
         var result = await _validator.ValidateAsync(input);
 
         if (!result.IsValid)
-            throw new ValidationException(
+            throw new FluentValidation.ValidationException(
                 string.Join(", ", result.Errors.Select(e => e.ErrorMessage))
             );
 
         var existingUser = await _userRepository.GetUserByEmailAsync(input.Email);
 
         if (existingUser)
-            throw new ValidationException("Email already exists");
+            throw new Common.Exceptions.ValidationException("Email already exists");
 
         var hashedPassword = BCryptPassword.HashPassword(input.Password);
 

@@ -8,7 +8,7 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
-  
+
     public DbSet<ProductEntity> ProductEntity { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<OrderItemEntity> OrderItems { get; set; }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
+    public DbSet<AuditLogEntity> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

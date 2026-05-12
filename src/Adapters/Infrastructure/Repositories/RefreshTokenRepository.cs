@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using NexoraBackend.Application.Mappings;
 using NexoraBackend.Core.Domain.Entities;
@@ -26,8 +25,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
 
     public async Task<RefreshToken?> GetByTokenAsync(string token)
     {
-
-        var entity = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
+        var entity = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token && !x.IsRevoked);
         if (entity == null)
             return null;
         return _mapper.ToDomain(entity);
@@ -35,7 +33,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
 
     public async Task<bool> RevokeAsync(string token)
     {
-        var refreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
+        var refreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token );
         if (refreshToken != null)
         {
             refreshToken.IsRevoked = true;
