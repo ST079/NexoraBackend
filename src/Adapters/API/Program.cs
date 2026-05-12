@@ -15,11 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Register infrastructure services
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ITokenService, JwtService>();
-builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
 //config
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
@@ -33,8 +28,6 @@ builder.Services
     {
         opt.IncludeExceptionDetails = true;
     }).AddAuthorization();
-
-
 
 //Adding the http concept to add the cookie
 builder.Services.AddHttpContextAccessor();
