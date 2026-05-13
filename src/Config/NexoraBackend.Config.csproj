@@ -1,15 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\Adapters\Application\NexoraBackend.Application.csproj" />
-    <ProjectReference Include="..\Adapters\Infrastructure\NexoraBackend.Infrastructure.csproj" />
-    <ProjectReference Include="..\Common\NexoraBackend.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

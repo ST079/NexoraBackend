@@ -2,7 +2,7 @@ namespace NexoraBackend.Application.Entities;
 
 public class ProductEntity
 {
-    public Guid ProductId = default!;
+    public Guid ProductId { get; set; } 
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
     public string? Brand { get; set; }

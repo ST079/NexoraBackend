@@ -3,8 +3,7 @@ namespace NexoraBackend.Application.Entities;
 
 public class OrderEntity
 {
-    public Guid OrderId = new Guid();
-
+    public Guid OrderId {get; private set; }
     public Guid OrderedBy { get; set; } = default!;
     public string Status { get; set; } = "PENDING";
     public string ShippingAddressStreet { get; set; } = default!;
