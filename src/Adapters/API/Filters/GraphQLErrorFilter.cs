@@ -22,7 +22,7 @@ public class GraphQLErrorFilter : IErrorFilter
         }
 
         return ErrorBuilder.New()
-            .SetMessage("Something went wrong")
+            .SetMessage(error.Message)
             .Build();
     }
 }

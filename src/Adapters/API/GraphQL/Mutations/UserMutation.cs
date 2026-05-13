@@ -4,16 +4,21 @@ using NexoraBackend.Application.DTOs.Responses.Auth;
 using NexoraBackend.Application.DTOs.Responses.Users;
 using NexoraBackend.Application.UseCases.Auth;
 using NexoraBackend.Application.UseCases.Users;
-namespace NexoraBackend.API.GraphQL.Users;
 
-public class Mutation
+
+namespace NexoraBackend.API.GraphQL.Mutations;
+
+[ExtendObjectType(typeof(Mutation))]
+public class UserMutation
 {
-    [Authorize]
+
+    [Authorize(Roles = new[] { "Admin" })]
     public async Task<UserResponseDto> CreateUser
    (CreateUserDto createUserDto, [Service] CreateUserUseCase createUserUseCase)
     {
         return await createUserUseCase.Execute(createUserDto);
     }
+
 
     public async Task<LoginResponseDto> Login(LoginDto loginDto, [Service] LoginUseCase loginUseCase, [Service] IHttpContextAccessor httpContextAccessor)
     {
@@ -39,26 +44,46 @@ public class Mutation
         return result;
     }
 
-    public async Task<RegisterResponseDto> Register(RegisterDto registerDto, [Service] RegisterUserUseCase registerUseCase)
+    public async Task<RegisterResponseDto> Register(RegisterDto registerDto, [Service] RegisterUserUseCase registerUseCase, [Service] IHttpContextAccessor httpContextAccessor)
     {
-        return await registerUseCase.Execute(registerDto);
+        var result = await registerUseCase.Execute(registerDto);
+        var response = httpContextAccessor.HttpContext!.Response;
+
+        response.Cookies.Append("accessToken", result.Token.AccessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTime.UtcNow.AddMinutes(15)
+        });
+
+        response.Cookies.Append("refreshToken", result.Token.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false, //true for https and false for http
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTime.UtcNow.AddDays(2)
+        });
+        return result;
+
     }
 
-    [Authorize]
+    [Authorize(Roles = new[] { "Admin" })]
     public async Task<UserResponseDto> UpdateUser
-   (UpdateUserDto updateUserDto, [Service] UpdateUserUseCase updateUserUseCase)
+       (UpdateUserDto updateUserDto, [Service] UpdateUserUseCase updateUserUseCase)
     {
         return await updateUserUseCase.Execute(updateUserDto);
     }
 
-    [Authorize]
+    [Authorize(Roles = new[] { "Admin" })]
+
     public async Task<bool> DeleteUser(Guid id, [Service] DeleteUserUseCase deleteUserUseCase)
     {
         return await deleteUserUseCase.Execute(id);
     }
 
 
-    [Authorize]
+    [Authorize(Roles = new[] { "User", "Admin", "Merchant" })]
     public async Task<bool> Logout(string refreshToken, [Service] LogoutUseCase logoutUseCase, [Service] IHttpContextAccessor httpContextAccessor)
     {
         await logoutUseCase.Execute(refreshToken);

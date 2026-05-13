@@ -1,14 +1,12 @@
 
-
-
-using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Authorization;
 using NexoraBackend.Application.DTOs.Responses.Users;
 using NexoraBackend.Application.Services;
 
-namespace NexoraBackend.API.GraphQL.Users;
+namespace NexoraBackend.API.GraphQL.Queries;
 
-public class Query
+[ExtendObjectType(typeof(Query))] 
+public class UserQuery
 {
     [Authorize]
     public async Task<IEnumerable<UserResponseDto>> GetUsers([Service] UserQueryService userService)
