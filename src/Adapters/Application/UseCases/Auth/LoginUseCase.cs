@@ -12,16 +12,17 @@ public class LoginUseCase
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _jwtService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-
+    private readonly IAuditLogRepository _auditLogRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public LoginUseCase(IUnitOfWork unitOfWork, IUserRepository userRepository, ITokenService jwtService, IRefreshTokenRepository refreshTokenRepository)
+    public LoginUseCase(IAuditLogRepository auditLogRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, ITokenService jwtService, IRefreshTokenRepository refreshTokenRepository)
     {
 
         _userRepository = userRepository;
         _jwtService = jwtService;
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
+        _auditLogRepository = auditLogRepository;
     }
 
     public async Task<LoginResponseDto> Execute(LoginDto input)
@@ -35,12 +36,6 @@ public class LoginUseCase
 
         var accessToken = _jwtService.GenerateAccessToken(user);
         var refreshToken = _jwtService.GenerateRefreshToken();
-        // var existingTokens = await _refreshTokenRepository.GetActiveTokensByUserIdAsync(user.Id);
-
-        // foreach (var token in existingTokens)
-        // {
-        //     token.IsRevoked = true;
-        // }
 
         await _refreshTokenRepository.CreateAsync(new RefreshToken
         {
@@ -52,6 +47,14 @@ public class LoginUseCase
         });
 
         await _unitOfWork.SaveChangesAsync();
+
+        //logging the login action
+        await _auditLogRepository.AddAsync(new AuditLog
+        {
+            UserId = user.Id,
+            Action = "LOGIN",
+            Details = "User logged in successfully"
+        });
 
         return new LoginResponseDto
         {

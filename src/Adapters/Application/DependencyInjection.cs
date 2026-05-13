@@ -21,6 +21,10 @@ public static class DependencyInjection
 
         //mappers
         services.AddScoped<UserMapper>();
+        services.AddScoped<RefreshTokenMapper>();
+        services.AddScoped<AuditLogMapper>();
+        services.AddScoped<ProductMapper>();
+
 
         //validators
         services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();

@@ -93,3 +93,105 @@ Response DTO
    ↓
 Frontend
 ```
+
+
+### Types of SameSite
+
+There are mainly 3:
+```
+SameSiteMode.Strict
+SameSiteMode.Lax
+SameSiteMode.None
+```
+1. Strict → Most secure
+```
+SameSite = SameSiteMode.Strict
+```
+
+Browser sends cookie only if request comes from same site.
+
+If user comes from another website → cookie is NOT sent.
+```
+
+Example
+
+Suppose your backend is:
+
+api.nexora.com
+
+User clicks from:
+
+google.com → api.nexora.com
+
+With Strict:
+
+❌ cookie not sent
+
+Even normal link clicks may lose auth.
+```
+
+#### Use when?
+
+Use for:
+
+banking apps
+highly sensitive admin panels
+internal enterprise tools
+security-first systems
+
+Where security > convenience
+
+2. Lax → Balanced (most common)
+```
+SameSite = SameSiteMode.Lax
+```
+
+Cookies are sent for:
+
+✅ normal navigation
+✅ GET requests from links
+
+But blocked for:
+
+❌ POST from other sites
+❌ hidden form CSRF attacks
+
+#### Use when?
+
+Best for:
+
+normal login systems
+GraphQL APIs
+dashboards
+SaaS apps
+most production apps
+
+Security + usability balance
+
+This is the most commonly used option.
+
+3. None → Allow everything
+```
+SameSite = SameSiteMode.None
+```
+
+Cookies sent always, even cross-site.
+
+BUT must also use:
+
+Secure = true
+
+Required by browsers.
+
+#### Use when?
+
+Use for:
+
+frontend and backend on different domains
+
+Example:
+
+Frontend → app.vercel.app
+Backend → api.render.com
+
+Cross-origin login needs this.

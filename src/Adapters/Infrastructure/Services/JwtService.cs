@@ -21,6 +21,7 @@ public class JwtService : ITokenService
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, string.Join(",", user.Roles))
         };
 
         if (string.IsNullOrEmpty(_configuration["Jwt:Key"]))
@@ -51,7 +52,7 @@ public class JwtService : ITokenService
 
     public string GenerateRefreshToken()
     {
-        var randomBytes= new byte[64];
+        var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
 
