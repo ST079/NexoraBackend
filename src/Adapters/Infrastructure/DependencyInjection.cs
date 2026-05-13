@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NexoraBackend.Core.Domain.Entities;
 using NexoraBackend.Core.Domain.Ports;
 using NexoraBackend.Infrastructure.Persistence;
 using NexoraBackend.Infrastructure.Repositories;
@@ -21,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
 
         // unit of work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -13,6 +13,8 @@ public class UserEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string? ProfileImageUrl { get; set; }
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public List<string> Roles { get; set; } = new() { "User" };
     public ICollection<UserRoleEntity> UserRoles { get; set; } = new List<UserRoleEntity>();
     public bool IsActive { get; set; } = true;
 }
+

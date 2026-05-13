@@ -12,19 +12,18 @@ public class UserRoleEntityConfiguration : IEntityTypeConfiguration<UserRoleEnti
         builder.ToTable("UserRoles");
 
         // Composite Primary Key
-        // One user + one role combination should be unique
-        builder.HasKey(x => new { x.UserId, x.RoleId });
+        builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
-        // Foreign Key: User → UserRoles
-        builder.HasOne(x => x.User)
-            .WithMany()
-            .HasForeignKey(x => x.UserId)
+        // User relationship
+        builder.HasOne(ur => ur.User)
+            .WithMany(u => u.UserRoles)
+            .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Foreign Key: Role → UserRoles
-        builder.HasOne(x => x.Role)
-            .WithMany()
-            .HasForeignKey(x => x.RoleId)
+        // Role relationship
+        builder.HasOne(ur => ur.Role)
+            .WithMany(r => r.UserRoles)
+            .HasForeignKey(ur => ur.RoleId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
