@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NexoraBackend.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260511082926_AddRefreshTokenTable")]
-    partial class AddRefreshTokenTable
+    [Migration("20260513024235_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,36 @@ namespace NexoraBackend.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("NexoraBackend.Application.Entities.AuditLogEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
 
             modelBuilder.Entity("NexoraBackend.Application.Entities.OrderEntity", b =>
                 {
@@ -283,6 +313,10 @@ namespace NexoraBackend.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.PrimitiveCollection<List<string>>("Roles")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -329,13 +363,13 @@ namespace NexoraBackend.Infrastructure.Migrations
             modelBuilder.Entity("NexoraBackend.Application.Entities.UserRoleEntity", b =>
                 {
                     b.HasOne("NexoraBackend.Application.Entities.RoleEntity", "Role")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("NexoraBackend.Application.Entities.UserEntity", "User")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -343,6 +377,16 @@ namespace NexoraBackend.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NexoraBackend.Application.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("NexoraBackend.Application.Entities.UserEntity", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

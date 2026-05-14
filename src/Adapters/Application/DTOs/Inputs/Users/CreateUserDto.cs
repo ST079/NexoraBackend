@@ -10,4 +10,5 @@ public class CreateUserDto
     public string Country { get; set; } = default!;
     public string? PhoneNumber { get; set; }
     public string? ProfilePictureUrl { get; set; }
+    public List<Guid>? RoleIds { get; set; } = new();
 }

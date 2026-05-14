@@ -4,9 +4,8 @@ using NexoraBackend.Application.DTOs.Inputs.Users;
 using NexoraBackend.Application.DTOs.Responses.Users;
 using NexoraBackend.Application.Mappings;
 using NexoraBackend.Common.Helpers;
-using NexoraBackend.Core.Domain.Factory;
+using NexoraBackend.Core.Domain.Entities;
 using NexoraBackend.Core.Domain.Ports;
-using NexoraBackend.Core.Domain.ValueObjects;
 
 
 namespace NexoraBackend.Application.UseCases.Users;
@@ -17,13 +16,16 @@ public class CreateUserUseCase
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserMapper _mapper;
+    private readonly IRoleRepository _roleRepository;
 
-    public CreateUserUseCase(IUserRepository userRepository, IValidator<CreateUserDto> validator, IUnitOfWork unitOfWork, UserMapper mapper)
+    public CreateUserUseCase(IUserRepository userRepository, IValidator<CreateUserDto> validator, IUnitOfWork unitOfWork, UserMapper mapper, IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
         _validator = validator;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _roleRepository = roleRepository;
+
     }
 
     public async Task<UserResponseDto> Execute(CreateUserDto input)
@@ -42,16 +44,10 @@ public class CreateUserUseCase
 
         var hashedPassword = BCryptPassword.HashPassword(input.Password);
 
-        var user = UserFactory.Create(
-            input.Name,
-            input.Email,
-            hashedPassword,
-            new Address(input.City, input.Street, input.Country),
-            RoleFactory.DefaultRoles(),
-            input.PhoneNumber ?? string.Empty,
-            input.ProfilePictureUrl ?? string.Empty
-        );
+        var defaultRole = await _roleRepository.GetByNameAsync("User");
 
+        var user = _mapper.ToDomain(input, new List<Role> { defaultRole! });
+        user.Password = hashedPassword;
         await _userRepository.CreateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
 

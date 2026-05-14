@@ -18,11 +18,17 @@ public class JwtService : ITokenService
     }
     public string GenerateAccessToken(User user)
     {
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, string.Join(",", user.Roles))
+            new Claim(ClaimTypes.Name, user.Name)
         };
+
+        foreach (var role in user.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
 
         if (string.IsNullOrEmpty(_configuration["Jwt:Key"]))
         {

@@ -1,48 +1,129 @@
-using NexoraBackend.Application.Mappings;
+using Microsoft.EntityFrameworkCore;
 using NexoraBackend.Core.Domain.Entities;
 using NexoraBackend.Core.Domain.Ports;
+using NexoraBackend.Application.Entities;
 using NexoraBackend.Infrastructure.Persistence;
+using NexoraBackend.Application.Mappings;
+using NexoraBackend.Common.Enums;
+using NexoraBackend.Common.Exceptions;
 
 namespace NexoraBackend.Infrastructure.Repositories;
 
 public class RoleRepository : IRoleRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _dbContext;
     private readonly RoleMapper _mapper;
 
-    public RoleRepository(AppDbContext context, RoleMapper mapper)
+    public RoleRepository(AppDbContext dbContext, RoleMapper mapper)
     {
-        _context = context;
+        _dbContext = dbContext;
         _mapper = mapper;
     }
 
-    public async Task<Role> CreateRoleAsync(Role role)
+    // Get multiple roles by IDs
+    public async Task<List<Role>> GetByIdsAsync(List<Guid> roleIds)
     {
-        var entity = _mapper.ToEntity(role);
-        await _context.Roles.AddAsync(entity);
-        await _context.SaveChangesAsync();
-        return _mapper.ToDomain(entity);
+        var roles = await _dbContext.Roles
+            .Where(r => roleIds.Contains(r.RoleId))
+            .ToListAsync();
+
+        return roles.Select(r => _mapper.ToDomain(r)).ToList();
     }
 
-
-    public async Task<bool> DeleteRoleAsync(Guid id)
+    // Get role by name
+    public async Task<Role?> GetByNameAsync(string roleName)
     {
-        var role = await _context.Roles.FindAsync(id);
-        if (role == null) return false;
+        var role = await _dbContext.Roles
+            .FirstOrDefaultAsync(r => r.Name == roleName);
 
-        _context.Roles.Remove(role);
-        await _context.SaveChangesAsync();
-        return true;
+        if (role == null)
+            throw new NotFoundException($"Role with name '{roleName}' not found.");
+
+        return _mapper.ToDomain(role);
     }
 
-    public async Task<Role?> GetRoleByIdAsync(Guid id)
+    // Get all roles
+    public async Task<List<Role>> GetAllAsync()
     {
-        var role = await _context.Roles.FindAsync(id);
-        return role == null ? null : _mapper.ToDomain(role);
+        return await _dbContext.Roles
+            .Select(r => _mapper.ToDomain(r))
+            .ToListAsync();
     }
 
-    public Task<IEnumerable<Role>> GetRolesAsync()
+    // Get role by ID
+    public async Task<Role?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var role = await _dbContext.Roles
+            .FirstOrDefaultAsync(r => r.RoleId == id);
+
+        if (role == null)
+            throw new NotFoundException($"Role with ID '{id}' not found.");
+
+        return _mapper.ToDomain(role);
+    }
+
+    // Create new role
+    public async Task AddAsync(Role role)
+    {
+        if (!Enum.IsDefined(typeof(RoleType), role.Name))
+        {
+            throw new ConflictException($"Invalid role type provided: {role.Name}");
+        }
+
+
+        var existingRole = await _dbContext.Roles
+            .FirstOrDefaultAsync(r => string.Equals(r.Name.ToLower(), role.Name.ToLower()));
+
+        if (existingRole != null)
+            throw new ConflictException($"Role with name '{role.Name}' already exists.");
+
+
+        var entity = new RoleEntity
+        {
+            RoleId = role.RoleId == Guid.Empty ? Guid.NewGuid() : role.RoleId,
+            Name = role.Name
+        };
+
+        await _dbContext.Roles.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _dbContext.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
+        if (entity != null)
+        {
+            _dbContext.Roles.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task AssignRoleAsync(Guid userId, Guid roleId, string roleName)
+    {
+        var user = await _dbContext.Users
+            .Include(u => u.UserRoles)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+        var alreadyExists = user.UserRoles
+            .Any(x => x.RoleId == roleId);
+
+        if (alreadyExists)
+            throw new ConflictException("Role already assigned");
+
+        user.UserRoles.Add(new UserRoleEntity
+        {
+            UserId = userId,
+            RoleId = roleId
+        });
+
+        var existInRolesList = user.Roles.Any(r => r.Equals(roleName, StringComparison.OrdinalIgnoreCase));
+
+        if (!existInRolesList)
+        {
+            user.Roles.Add(roleName);
+        }
     }
 }

@@ -4,8 +4,13 @@ namespace NexoraBackend.Core.Domain.Ports;
 
 public interface IRoleRepository
 {
-    Task<IEnumerable<Role>> GetRolesAsync();
-    Task<Role?> GetRoleByIdAsync(Guid id);
-    Task<Role> CreateRoleAsync(Role role);
-    Task<bool> DeleteRoleAsync(Guid id);
+    Task<List<Role>> GetByIdsAsync(List<Guid> roleIds);
+    Task<Role?> GetByNameAsync(string name);
+    Task<List<Role>> GetAllAsync();
+    Task<Role?> GetByIdAsync(Guid id);
+    Task AddAsync(Role role);
+    Task DeleteAsync(Guid id);
+    Task AssignRoleAsync(Guid userId, Guid roleId, string roleName);
+
+
 }

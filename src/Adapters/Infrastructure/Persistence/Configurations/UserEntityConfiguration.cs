@@ -39,6 +39,11 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 
         builder.Property(user => user.ProfileImageUrl).HasMaxLength(500).IsRequired(false);
 
+        builder.HasMany(user => user.UserRoles)
+               .WithOne(ur => ur.User)
+               .HasForeignKey(ur => ur.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(user => user.CreatedAt).IsRequired().HasDefaultValueSql("NOW()");
 
         builder.Property(user => user.IsActive).IsRequired().HasDefaultValue(true);

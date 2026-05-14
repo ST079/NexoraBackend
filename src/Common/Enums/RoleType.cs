@@ -1,6 +1,6 @@
 namespace NexoraBackend.Common.Enums;
 
-public enum Role
+public enum RoleType
 {
     User,
     Admin,

@@ -310,6 +310,10 @@ namespace NexoraBackend.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.PrimitiveCollection<List<string>>("Roles")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -356,13 +360,13 @@ namespace NexoraBackend.Infrastructure.Migrations
             modelBuilder.Entity("NexoraBackend.Application.Entities.UserRoleEntity", b =>
                 {
                     b.HasOne("NexoraBackend.Application.Entities.RoleEntity", "Role")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("NexoraBackend.Application.Entities.UserEntity", "User")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -370,6 +374,16 @@ namespace NexoraBackend.Infrastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NexoraBackend.Application.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("NexoraBackend.Application.Entities.UserEntity", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

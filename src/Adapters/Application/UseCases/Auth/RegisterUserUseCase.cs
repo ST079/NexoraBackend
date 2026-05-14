@@ -5,6 +5,7 @@ using NexoraBackend.Application.Mappings;
 using NexoraBackend.Common.Exceptions;
 using NexoraBackend.Common.Helpers;
 using NexoraBackend.Core.Domain.Entities;
+using NexoraBackend.Core.Domain.Factory;
 using NexoraBackend.Core.Domain.Ports;
 
 namespace NexoraBackend.Application.UseCases.Auth;
@@ -17,15 +18,17 @@ public class RegisterUserUseCase
 
     private readonly IRefreshTokenRepository _refreshTokenRepository;
 
+    private readonly IRoleRepository _roleRepository;
     private readonly ITokenService _jwtService;
 
-    public RegisterUserUseCase(IRefreshTokenRepository refreshTokenRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, UserMapper mapper, ITokenService jwtService)
+    public RegisterUserUseCase(IRoleRepository roleRepository, IRefreshTokenRepository refreshTokenRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, UserMapper mapper, ITokenService jwtService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _jwtService = jwtService;
         _refreshTokenRepository = refreshTokenRepository;
+        _roleRepository = roleRepository;
     }
 
     public async Task<RegisterResponseDto> Execute(RegisterDto input)
@@ -34,16 +37,23 @@ public class RegisterUserUseCase
         if (existingUser)
             throw new ConflictException("Email already exists");
 
-        input.Password = BCryptPassword.HashPassword(input.Password);
+        var hashedPassword = BCryptPassword.HashPassword(input.Password);
 
-        var newUser = _mapper.ToDomain(input);
+        var defaultRole = await _roleRepository.GetByNameAsync("User");
+
+        if (defaultRole == null)
+            throw new Exception("Default role not found");
+
+        var roles = new List<Role> { defaultRole };
+
+        var newUser = _mapper.ToDomain(input, roles);
+
+        newUser.Password = hashedPassword;
 
         await _userRepository.CreateUserAsync(newUser);
 
-
         var accessToken = _jwtService.GenerateAccessToken(newUser);
         var refreshToken = _jwtService.GenerateRefreshToken();
-
 
         await _refreshTokenRepository.CreateAsync(new RefreshToken
         {
@@ -64,9 +74,7 @@ public class RegisterUserUseCase
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             }
-        }
-        ;
-
+        };
     }
 
 }

@@ -11,5 +11,6 @@ public class UserResponseDto
     public string Country { get; set; } = default!;
     public string? PhoneNumber { get; set; }
     public string? ProfileImageUrl { get; set; }
+    public List<string> Roles { get; set; } = default!;
     public bool IsActive { get; set; }
 }
