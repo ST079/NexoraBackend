@@ -1,28 +1,63 @@
-using HotChocolate.Execution;
-using NexoraBackend.Common.Exceptions;
+
+using FluentValidation;
+
+using NexoraBackend.Core.Exceptions;
 
 namespace NexoraBackend.API.Filters;
 
 public class GraphQLErrorFilter : IErrorFilter
 {
+    private readonly IHostEnvironment _env;
+    private readonly ILogger<GraphQLErrorFilter> _logger;
+
+    public GraphQLErrorFilter(IHostEnvironment env, ILogger<GraphQLErrorFilter> logger)
+    {
+        _env = env;
+        _logger = logger;
+    }
+
     public IError OnError(IError error)
     {
-        if (error.Exception is CustomException ex)
+        if (error.Exception is DomainException domainEx)
         {
-            return ErrorBuilder.New()
-                .SetMessage(ex.Message)
-                .SetCode(ex.StatusCode.ToString())
+            return ErrorBuilder
+                .FromError(error)
+                .SetMessage(domainEx.Message)
                 .Build();
         }
 
-        if (error.Code == "AUTH_NOT_AUTHORIZED" || error.Message == "The current user is not authorized to access this resource.")
+        if (error.Exception is ValidationException validationEx)
         {
-            return error.WithMessage("You do not have permission to perform this action.")
-                        .WithCode("403");
+            var messages = validationEx.Errors
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return ErrorBuilder
+                .FromError(error)
+                .SetMessage(string.Join("; ", messages))
+                .Build();
         }
 
-        return ErrorBuilder.New()
-            .SetMessage(error.Message)
-            .Build();
+        if (error.Exception is UnauthorizedAccessException)
+        {
+            return ErrorBuilder
+                .FromError(error)
+                .SetMessage("Unauthorized.")
+                .Build();
+        }
+
+        if (error.Exception != null)
+        {
+            _logger.LogError(error.Exception, "Unhandled GraphQL exception");
+
+            return _env.IsDevelopment()
+                ? error
+                : ErrorBuilder
+                    .FromError(error)
+                    .SetMessage("An internal error occurred.")
+                    .Build();
+        }
+
+        return error;
     }
 }

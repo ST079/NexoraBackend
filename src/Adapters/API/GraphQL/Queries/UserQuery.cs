@@ -1,30 +1,33 @@
-
 using HotChocolate.Authorization;
-using NexoraBackend.Application.DTOs.Responses.Users;
-using NexoraBackend.Application.Services;
+using MediatR;
+using NexoraBackend.API.Extensions;
+using NexoraBackend.Application.DTOs;
+using NexoraBackend.Application.Queries.Users;
 
 namespace NexoraBackend.API.GraphQL.Queries;
 
-[ExtendObjectType(typeof(Query))] 
-public class UserQuery
+[ExtendObjectType(OperationTypeNames.Query)]
+public class UserQueries
 {
     [Authorize]
-    public async Task<IEnumerable<UserResponseDto>> GetUsers([Service] UserQueryService userService)
+    public async Task<UserDto?> GetMe(
+        [Service] IMediator mediator,
+        [Service] IHttpContextAccessor httpContext,
+        CancellationToken ct = default)
     {
-        return await userService.GetUsersAsync();
+        var userId = httpContext.HttpContext!.GetUserId();
+        var result = await mediator.Send(new GetUserQuery(userId), ct);
+        return result.IsSuccess ? result.Value : null;
     }
 
-
-    [Authorize]
-    public async Task<UserResponseDto?> GetUserById(Guid id, [Service] UserQueryService userService)
+    [Authorize(Roles = new[] { "Admin", "SuperAdmin" })]
+    [UseOffsetPaging]
+    public async Task<IEnumerable<UserDto>> GetAllUsers(
+        [Service] IMediator mediator,
+        int page = 1, int pageSize = 20,
+        CancellationToken ct = default)
     {
-        return await userService.GetUserByIdAsync(id);
+        var result = await mediator.Send(new GetAllUsersQuery(page, pageSize), ct);
+        return result.IsSuccess ? result.Value!.Items : [];
     }
-
-    public async Task<bool> GetUserByEmail(string email, [Service] UserQueryService userService)
-    {
-        return await userService.GetUserByEmail(email);
-    }
-
-
 }

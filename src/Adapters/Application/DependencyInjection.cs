@@ -1,46 +1,32 @@
+using System.Reflection;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using NexoraBackend.Application.Mappings;
-using NexoraBackend.Application.Services;
-using NexoraBackend.Application.UseCases.Auth;
-using NexoraBackend.Application.UseCases.Roles;
-using NexoraBackend.Application.UseCases.Users;
-using NexoraBackend.Application.Validators.Users;
+using NexoraBackend.Application.Behaviors;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        //usecases
-        //user
-        services.AddScoped<CreateUserUseCase>();
-        services.AddScoped<LoginUseCase>();
-        services.AddScoped<UpdateUserUseCase>();
-        services.AddScoped<DeleteUserUseCase>();
-        services.AddScoped<RegisterUserUseCase>();
-        services.AddScoped<AddRoleUseCase>();
-        services.AddScoped<LogoutUseCase>();
-        services.AddScoped<AssignRoleUseCase>();
-        services.AddScoped<DeleteRoleUseCase>();
+        var assembly = Assembly.GetExecutingAssembly();
 
-        //roles
-        services.AddScoped<AddRoleUseCase>();
+        // MediatR registration (ONLY this here)
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(assembly);
+        });
 
-        //mappers
-        services.AddScoped<UserMapper>();
-        services.AddScoped<RefreshTokenMapper>();
-        services.AddScoped<AuditLogMapper>();
-        services.AddScoped<ProductMapper>();
-        services.AddScoped<RoleMapper>();
+        // Pipeline behaviors MUST be registered in DI
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
+        // Validators
+        services.AddValidatorsFromAssembly(assembly);
 
-
-        //validators
-        services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
-
-        //services
-        services.AddScoped<UserQueryService>();
-        services.AddScoped<RoleQueryService>();
+        // AutoMapper
+        services.AddAutoMapper(assembly);
 
         return services;
     }
